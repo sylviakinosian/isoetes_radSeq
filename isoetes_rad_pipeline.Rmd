@@ -18,6 +18,12 @@ https://github.com/GenomicsCoreLeuven/GBSX
 java -jar ../releases/latest/GBSX_v1.0.jar --Demultiplexer -f1 -f2 -i (barcodes) -gzip true -o out_file
 ```
 
+### Stacks
+
+```{bash eval=FALSE}
+~/apps/stacks-2.5/process_radtags -P -p /media/kaiser/skinosian/isoetes/raw/ -o ./ -b isoetes_barcodes.txt -c -q -r --inline_null --renz_1 pstI --renz_2 mspI
+```
+
 ### Stats
 
 ## Data Processing
