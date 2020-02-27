@@ -4,24 +4,23 @@ author: "Sylvia Kinosian"
 output: html_document
 ---
 
-Data processing and analysis for PNW Isoetes project with Jacob Suissa.
+Data processing and analysis for PNW Isoetes project with Jacob Suissa. Unless otherwise noted, all analysis were performed using Ubuntu 18.04 LTS. Please see the Program Versions tab for information on programs used.
 
 # {.tabset}
 
 ## Demultiplexing
 
-### GBSX
-
-https://github.com/GenomicsCoreLeuven/GBSX
-
-```{bash eval=FALSE}
-java -jar ../releases/latest/GBSX_v1.0.jar --Demultiplexer -f1 -f2 -i (barcodes) -gzip true -o out_file
-```
-
 ### Stacks
 
 ```{bash eval=FALSE}
 ~/apps/stacks-2.5/process_radtags -P -p /media/kaiser/skinosian/isoetes/raw/ -o ./ -b isoetes_barcodes.txt -c -q -r --inline_null --renz_1 pstI --renz_2 mspI
+
+
+395070650 total sequences
+  8656066 barcode not found drops (2.2%)
+    20178 low quality read drops (0.0%)
+  3701923 RAD cutsite not found drops (0.9%)
+382692483 retained reads (96.9%)
 ```
 
 ### Stats
@@ -31,20 +30,20 @@ java -jar ../releases/latest/GBSX_v1.0.jar --Demultiplexer -f1 -f2 -i (barcodes)
 We utilized the ipyrad data processing pipeline (Eaton & Overcast 2020)
 
 ```{bash eval=FALSE}
-ipyrad -p params.txt 1234567
+ipyrad -p params.txt -s 1234567
 ```
 
 ```{bash eval=FALSE}
 ------- ipyrad params file (v.0.7.30)-------------------------------------------
 isoetes                        ## [0] [assembly_name]: Assembly name. Used to name output directories
-./                             ## [1] [project_dir]: Project dir (made in curdir if not present)
+                               ## [1] [project_dir]: Project dir (made in curdir if not present)
                                ## [2] [raw_fastq_path]: Location of raw non-demultiplexed fastq files
                                ## [3] [barcodes_path]: Location of barcodes file
-../fastqs/*.fastq.gz           ## [4] [sorted_fastq_path]: Location of demultiplexed/sorted fastq files
+./fastqs/*.fastq.gz            ## [4] [sorted_fastq_path]: Location of demultiplexed/sorted fastq files
 denovo                         ## [5] [assembly_method]: Assembly method 
                                ## [6] [reference_sequence]: Location of reference sequence file
 pairddrad                      ## [7] [datatype]: Datatype (see docs): rad, gbs, ddrad, etc.
-                               ## [8] [restriction_overhang]: Restriction overhang (cut1,) or (cut1, cut2)
+TGCAG, GCC                     ## [8] [restriction_overhang]: Restriction overhang (cut1,) or (cut1, cut2)
 5                              ## [9] [max_low_qual_bases]: Max low quality base calls (Q<20) in a read
 33                             ## [10] [phred_Qscore_offset]: phred Q score offset (33 is default)
 6                              ## [11] [mindepth_statistical]: Min depth for statistical base calling
@@ -57,7 +56,7 @@ pairddrad                      ## [7] [datatype]: Datatype (see docs): rad, gbs,
 2                              ## [18] [max_alleles_consens]: Max alleles per site in consensus sequences
 5, 5                           ## [19] [max_Ns_consens]: Max N's (uncalled bases) in consensus (R1, R2)
 8, 8                           ## [20] [max_Hs_consens]: Max Hs (heterozygotes) in consensus (R1, R2)
-48                             ## [21] [min_samples_locus]: Min # samples per locus for output
+20                             ## [21] [min_samples_locus]: Min # samples per locus for output
 20, 20                         ## [22] [max_SNPs_locus]: Max # SNPs per locus (R1, R2)
 8, 8                           ## [23] [max_Indels_locus]: Max # of indels per locus (R1, R2)
 0.5                            ## [24] [max_shared_Hs_locus]: Max # heterozygous sites per locus (R1, R2)
@@ -71,15 +70,54 @@ pairddrad                      ## [7] [datatype]: Datatype (see docs): rad, gbs,
 
 Full documentation for all ipyrad parameters can be found [here](https://ipyrad.readthedocs.io/parameters.html). Below are descriptions of a few key parameters that we chose in our analysis.
 
-[#5](https://ipyrad.readthedocs.io/parameters.html#assembly-method) **Assemby Method** - Since the available genomes for *Isoetes* are not very closely related to this clade, we decided to use the *de novo* assembly option for our ddRAD data. ipyrad offers four different assembly methods; for the [denovo method](https://ipyrad.readthedocs.io/methods.html#assembly-methods), raw sequences are assembled without a reference; homology is inferred using [vsearch](https://github.com/torognes/vsearch)
+[#5](https://ipyrad.readthedocs.io/parameters.html#assembly-method) **Assemby Method** - Since the available reference genomes for *Isoetes* are not very closely related to this clade, we decided to use the *de novo* assembly option for our ddRAD data. ipyrad offers four different assembly methods; for the [denovo method](https://ipyrad.readthedocs.io/methods.html#assembly-methods), raw sequences are assembled without a reference; homology is inferred using [vsearch](https://github.com/torognes/vsearch)
 <br>
-[#8](https://ipyrad.readthedocs.io/parameters.html#restriction-overhang) **Restriction Overhang** - We used the enzymes PstI and BfaI for our library preparation. [PstI](https://en.wikipedia.org/wiki/PstI) cuts at the 3' end, so you need to reverse compliment of the overhang: TGCAG. [BfaI](https://www.neb.com/products/R0568-BfaI#FAQs%20&%20Troubleshooting) cuts at the 5' end, so is simply: TAG.
+[#8](https://ipyrad.readthedocs.io/parameters.html#restriction-overhang) **Restriction Overhang** - We used the enzymes PstI and MspI for our library preparation. [PstI](https://en.wikipedia.org/wiki/PstI) cuts at the 3' end, so you need to reverse compliment of the overhang: TGCAG. [MspI](https://www.thermofisher.com/order/catalog/product/ER0541#/ER0541) cuts at the 5' end, so is: GCC.
 <br>
 [#16](https://ipyrad.readthedocs.io/parameters.html#filter-adapters) **Filter Adaptors** - We chose the most strict filtering option here, to remove not only barcodes, but Illumina and cutsite adaptors as well. During Step #2, reads are searched for the common Illumina adapter, plus the reverse complement of the second cut site (if present), plus the barcode (if present), and this part of the read is trimmed. 
 <br>
-[#21](https://ipyrad.readthedocs.io/parameters.html#min-samples-locus) **Min Samples per Locus** - This parameter sets the minimum number of samples that must have data for a given locus in the final data output. We chose to go with a relatively high number of minimum samples - 48 or half of the total samples. We wanted our final output file to have data from a at least half (if not a majority) of our individuals.
+[#21](https://ipyrad.readthedocs.io/parameters.html#min-samples-locus) **Min Samples per Locus** - This parameter sets the minimum number of samples that must have data for a given locus in the final data output. We chose to go with a relatively high number of minimum samples - 20 or a bit less than half of the total samples. We wanted our final output file to have data from most of our individuals.
 
 
 ## Data Analysis
 
+### Population structure
 
+To run STRUCTURE, we used the Center for High Performance Computing at the University of Utah ([CHPC](https://it.utah.edu/departments/chpc/)).
+
+We ran 50 chains each of *K* = 2-10.
+
+```{bash eval=FALSE}
+for k in {2..10};
+do
+	for r in {1..50);
+	do
+		structure -i iso.str -m mainparams -e extraparams -K $k -o out_iso_$k-$r &
+		sleep 3s
+	done
+done	
+```
+
+To combine chains across *Ks* we used the [CLUMMPAK server](http://clumpak.tau.ac.il/). We also used CLUMMPAK to estimate the Best K from Evanno et al. 2005
+
+### Phylogeny estimation
+
+### Ploidy analysis
+
+## Program Versions
+
+Below is a list of all program versions used in this analysis. **Please note** that newer versions of these software packages *may* work for this pipeline, but be aware that usage often changes with new verions. 
+
+[stacks v 2.5](http://catchenlab.life.illinois.edu/stacks/)
+
+[ipyrad](https://ipyrad.readthedocs.io/) [release: 0.7.30](https://github.com/dereneaton/ipyrad/releases/tag/0.7.30)
+
+[STRUCTURE v.2.3.4](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html)
+
+[Cluster Markov Packager Across K (CLUMMPAK)](http://clumpak.tau.ac.il/) 
+
+[Perl 5](https://www.perl.org/)
+
+[Python 2.7.13](https://www.python.org/downloads/release/python-2713/)
+
+[R v. >3.4](https://www.r-project.org/)
