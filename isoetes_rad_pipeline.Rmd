@@ -100,13 +100,257 @@ done
 
 To combine chains across *Ks* we used the [CLUMMPAK server](http://clumpak.tau.ac.il/). We also used CLUMMPAK to estimate the Best K from Evanno et al. 2005
 
+```
+# load in ks from clummpack files
+k2 <- read.csv("k2.txt", sep = '', header = F)
+k2 <- k2[,-(1:5)]
+k3 <- read.csv("k3.txt", sep = '', header = F)
+k3 <- k3[,-(1:5)]
+k4 <- read.csv("k4.txt", sep = '', header = F)
+k4 <- k4[,-(1:5)]
+k5 <- read.csv("k5.txt", sep = '', header = F)
+k5 <- k5[,-(1:5)]
+
+# names file includes individual ids, species names, and geographic locations
+names <- read.csv("names.txt", sep = '\t', header = F)
+
+x <- as.data.frame(matrix(ncol = 16, nrow = 50))
+x[,1:2] <- k2
+x[,3:5] <- k3
+x[,6:9] <- k4
+x[,10:14] <- k5
+x[,15:16] <- names
+
+# order by species, then geography
+x <- x[order(x$V16),]
+
+# list for plotting
+klist <- list(x[,1:2], x[,3:5], x[,6:9], x[,10:14])
+
+structure_plot(x[,16], ninds = 50, klist)
+
+#######################################################
+# functions needed
+######################################################
+
+# plotting and labeling function
+structure_plot <- function(labels, ninds = 60, klist){
+    # define colors
+    cols <- c('#A8FFFD', '#A39D9D','#FFFF00', '#ff5a5a', '#69C261', '#26CDCD', '#B862D3','#C1C6FF')
+    # unique label names
+    sp.names <- as.character(unique(labels))
+    #n <- as.data.frame(matrix(ncol = 1, nrow = ninds))
+    #n[,1] <- names
+    # locations of each column
+    b <- as.data.frame(matrix(ncol = 1, nrow = ninds))
+    b[,1] <- barplot(t(klist[[1]][1]), beside= F, col= cols, cex.name= 1, cex.axis= 1.2, border = 1, space = 0.05, xaxt = 'n', yaxt = 'n', cex.lab = 1, cex.main = 2)
+    # find locations for labels in the barplot
+    my.mean <- tapply(X = b[,1], INDEX = labels, mean)
+    my.min <- tapply(X = b[,1], INDEX = labels, min)
+    my.max <- tapply(X = b[,1], INDEX = labels, max)
+    # data frame for plotting
+    d <- sp_labels(names = sp.names, min = my.min, mean = my.mean, max = my.max)
+    # plot
+    plot_q_per_chain(klist)
+    text(cex = 1.5, x = (d[,2]-0.3), y = -0.7, labels = d[,1], xpd=NA, srt=50, font=3)
+    # lines
+    for (i in 1:length(d[,1])){
+        lines(x = d[i,3:4] , y = rep(-0.1, 2), lwd = 2.5, col = "black", xpd = NA)
+    }
+
+}
+
+# create labels
+sp_labels <- function(names, min, mean, max, ...){
+    d <- as.data.frame(matrix(nrow = length(names), ncol = 4))
+    for (j in 1:length(names)){
+            d[j,1] <- names[j]
+            d[j,3] <- min[[j]][1]
+            d[j,2] <- mean[[j]][1]
+            d[j,4] <- max[[j]][1]
+    }
+    return(d)
+}
+
+# plot chains with species and geography labels 
+plot_q_per_chain <- function(kqlist, ...){
+    # thalictroides 2, gaudichaudii, thalictroides 1, pteridoides, cornuta, misc, 
+    cols <- c('#A8FFFD','#B862D3', '#A39D9D','#FFFF00', '#69C261', '#FF59AC', '#26CDCD',  '#C1C6FF') 
+    #cols <- c('#000075', '#E6194B', '#AAFFC3', '#FFE119', '#F58231', '#3CB44B')
+    par(mfrow = c(length(kqlist),1), mar = c(1,3,3,1) + 0.1, oma = c(15,0,0,0), mgp = c(1,1,0))
+    chain <- seq(1, length(kqlist), 1) 
+    for(i in 1:length(kqlist)){
+        barplot(t(kqlist[[i]]), beside= F, col= cols, border = 1, space = 0.05, xaxt = 'n', yaxt = 'n', main = paste("k =", chain[i]+1, sep = ' '), cex.lab = 1.2, cex.main = 1.6)
+        # y axis
+        axis(2, at = c(0, 0.25, 0.5, 0.75, 1), cex.axis = 1, las = 2, pos = -0.2)
+    }
+}
+
+```
+
 ### Phylogeny estimation
+
+#### Tetrad
+
+ipyrad inferring quartet trees with [tetrad](https://nbviewer.jupyter.org/github/dereneaton/ipyrad/blob/master/tests/cookbook-quartet-species-tree.ipynb)
+
+Command line, on a server
+```{bash eval=FALSE}
+# start an interactive job
+srun -t 24:00:00 -n 24 -N 1 -A usubio-kp -p usubio-kp --pty /bin/bash -l
+
+# start ipcluster
+ipcluster start --n=24 --daemonize
+```
+
+Python
+```{perl eval=FALSE}
+import ipyrad.analysis as ipa
+import ipyparallel as ipp
+import toytree
+
+ipyclient = ipp.Client()
+print("connected to {} cores".format(len(ipyclient)))
+# connected to 24 cores
+
+tet = ipa.tetrad(
+	name="cer",
+	seqfile="./iso.snps.phy",
+	mapfile="./iso.snps.map",
+	nboots=50,
+	)
+
+# loading seq array [50 taxa x 81783 bp]
+# max unlinked SNPs per quartet (nloci): 11446
+
+tet.run(ipyclient=ipyclient)
+# host comput node: [24 cores] on kp382
+# inferring 395010 induced quartet trees
+# [####################] 100%  initial tree | 0:01:05 |
+# [####################] 100%  boot 100     | 0:47:22 |
+```
+
+Plotting
+```{r eval=FALSE}
+library(ape)
+library(phytools)
+# https://github.com/willpearse/willeerd
+library(willeerd)
+
+t <- read.tree(file.choose("cer.tree"))
+# Enter file name: cer.tree
+
+t
+# Phylogenetic tree with 48 tips and 47 internal nodes.
+
+#Tip labels:
+#	Pt03_R2_, Pt04_R2_, Pt02_R1_, Pt05_R1_, Pt06_R2_, Pt01_R2_, ...
+
+#Rooted; no branch lengths.
+
+t <- root(phy=t, outgroup="AcAu", resolve.root=T)
+plot(t, cex = 0.8)
+
+t$tip.label <- as.character(cnames$str_sp)
+
+################################################################
+# plot with geography
+
+plot(c, direction = "up", show.tip.label = FALSE)
+
+# Australia
+willeerd.tiplabels(tip = c(15, 33, 39, 40:52), pch = 21,  col = '#000000', bg ='#000000', cex = 1.2)
+# #FFFF00
+
+# Central America
+willeerd.tiplabels(tip = c(2,5,20,21,56:58), pch = 21, col = '#000000', bg ='#4363D8', cex = 1.2)
+
+# North America
+willeerd.tiplabels(tip = c(4,6:8, 10:12, 17, 25:28, 35), pch = 21, col = '#000000', bg ='#911EB4', cex = 1.2)
+
+# South America
+willeerd.tiplabels(tip = c(9, 22, 24, 34, 36:38), pch = 21, col = '#000000', bg ='#F032E6', cex = 1.2)
+
+# Asia
+willeerd.tiplabels(tip = c(1,3,11,13,14,16,18,19,23,53:55,59,60,61), pch = 21, col = '#000000', bg ='#A9A9A9', cex = 1.2)
+
+# Africa
+willeerd.tiplabels(tip = c(29:32), pch = 21, col = '#000000', bg = '#42D4F4', cex = 1.2)
+
+legend(1.5, 250, legend = c("Australia", "Central America", "North America", "South America", "Asia", "Africa"), pch = 19, cex = 1.5, col = c("#000000", "#4363D8", "#911EB4", "#F032E6", "#A9A9A9", "#42D4F4"))
+
+#####################################################################
+# plot with new names, derived from structure
+
+pdf("phy.pdf", width = 15, height = 10)
+plot(t, direction = 'up', show.tip.label = FALSE)
+
+# thalictroides 1
+willeerd.tiplabels(tip = c(1:14, 15, 16, 18, 20, 49:57), pch = 21, col = "#000000", bg = "#AAFFC3", cex = 2)
+
+# thalictroides 2
+willeerd.tiplabels(tip = c(41:47), pch = 21, col = "#000000", bg = "#000075", cex = 2)
+
+# cornuta
+willeerd.tiplabels(tip = c(19, 21, 22, 31, 32), pch = 21, col = '#000000', bg = "#F58231", cex = 2)
+
+# pteridoides
+willeerd.tiplabels(tip = c(24:28), pch = 21, col = '#000000', bg = "#FFE119", cex = 2)
+
+# gaudichaudii
+willeerd.tiplabels(tip = c(33:40, 48), pch = 21, col = '#000000', bg = "#E6194B", cex = 2)
+
+# richardii
+willeerd.tiplabels(tip = c(17, 23, 29), pch = 21, col = '#000000', bg = "#3CB44B", cex = 2)
+
+# Acrostichum
+willeerd.tiplabels(tip = 30, pch = 21, col = '#000000', bg = "#800000", cex = 2)
+
+legend(1.5, 400, legend = c("C. gaudichaudii", "C. cornuta", "C. pteridoides", "C. richardii", "C. thalictroides 1", "C. thalictroides 2", "A. aureum"), pch = 19, cex = 2, col = c("#E6194B", "#F58231", "#FFE119", "#3CB44B", "#AAFFC3", "#000075", "#800000"), bty= "n", text.font = 3)
+
+dev.off()
+
+#######################
+plot(t, direction = 'up', show.tip.label = FALSE)
+
+# thalictroides 2, gaudichaudii, thalictroides 1, pteridoides, cornuta, misc, 
+	#cols <- c('#A8FFFD','#B862D3', '#A39D9D','#FFFF00', '#69C261', '#FF59AC', '#26CDCD',  '#C1C6FF')
+
+# thalictroides 1
+willeerd.tiplabels(tip = c(1:14, 15, 16, 18, 20, 49:57), pch = 21, col = '#000000', bg = "#FFFF00", cex = 2.5)
+
+# thalictroides 2
+willeerd.tiplabels(tip = c(41:47), pch = 21, col = "#000000", bg = "#A8FFFD", cex = 2.5)
+
+# cornuta
+willeerd.tiplabels(tip = c(19, 21, 22, 31, 32), pch = 21, col = '#000000', bg = "#A39D9D", cex = 2.5)
+
+# pteridoides
+willeerd.tiplabels(tip = c(24:28), pch = 21, col = '#000000', bg = "#B862D3", cex = 2.5)
+
+# gaudichaudii
+willeerd.tiplabels(tip = c(33:40, 48), pch = 21, col = '#000000', bg = "#69C261", cex = 2.5)
+
+# richardii
+willeerd.tiplabels(tip = c(17, 23, 29), pch = 21, col = '#000000', bg = "#FF59AC", cex = 2.5)
+
+# Acrostichum
+willeerd.tiplabels(tip = 30, pch = 21, col = '#000000', bg = "#800000", cex = 2.5)
+
+legend(1.5, 400, legend = c("C. thalictroides 1", "C. thalictroides 2", "C. cornuta", "C. gaudichaudii", "C. pteridoides", "C. richardii", "A. aureum"), pch = 19, cex = 2, col = c("#FFFF00", "#A8FFFD", "#A39D9D",  "#69C261", "#B862D3", "#FF59AC", "#800000"), bty= "n", text.font = 3)
+
+
+#############################################################
+# trying to sort one column by another with the same names in a different order
+# m <- match(names[,1], c_names[,1])
+# match_names <- match_names[order(m),]
+```
 
 ### Ploidy analysis
 
 ## Program Versions
 
-Below is a list of all program versions used in this analysis. **Please note** that newer versions of these software packages *may* work for this pipeline, but be aware that usage often changes with new verions. 
+Below is a list of all program versions used in this analysis. **Please note** that newer versions of these software packages *may* work for this pipeline, but be aware that usage often changes with new versions. 
 
 [stacks v 2.5](http://catchenlab.life.illinois.edu/stacks/)
 
