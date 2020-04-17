@@ -221,7 +221,7 @@ ipyrad inferring quartet trees with [tetrad](https://nbviewer.jupyter.org/github
 Command line, on a server
 ```{bash eval=FALSE}
 # start an interactive job
-srun -t 24:00:00 -n 24 -N 1 -A usubio-kp -p usubio-kp --pty /bin/bash -l
+srun -t 24:00:00 -n 24 -N 1 -A wolf-kp -p wolf-kp --pty /bin/bash -l
 
 # start ipcluster
 ipcluster start --n=24 --daemonize
@@ -238,20 +238,20 @@ print("connected to {} cores".format(len(ipyclient)))
 # connected to 24 cores
 
 tet = ipa.tetrad(
-	name="cer",
+	name="iso",
 	seqfile="./iso.snps.phy",
 	mapfile="./iso.snps.map",
-	nboots=50,
+	nboots=100,
 	)
 
-# loading seq array [50 taxa x 81783 bp]
-# max unlinked SNPs per quartet (nloci): 11446
+# loading seq array [49 taxa x 21616 bp]
+# max unlinked SNPs per quartet (nloci): 3343
 
 tet.run(ipyclient=ipyclient)
 # host comput node: [24 cores] on kp382
 # inferring 395010 induced quartet trees
-# [####################] 100%  initial tree | 0:01:05 |
-# [####################] 100%  boot 50     | 0:52:57 |
+# [####################] 100%  initial tree | 0:00:40 |
+# [####################] 100%  boot 100     | 0:52:57 |
 ```
 
 Plotting
@@ -261,47 +261,20 @@ library(phytools)
 # https://github.com/willpearse/willeerd
 library(willeerd)
 
-t <- read.tree(file.choose("cer.tree"))
+t <- read.tree("cer.tree")
 # Enter file name: cer.tree
 
 t
 # Phylogenetic tree with 48 tips and 47 internal nodes.
 
-#Tip labels:
-#	Pt03_R2_, Pt04_R2_, Pt02_R1_, Pt05_R1_, Pt06_R2_, Pt01_R2_, ...
-
-#Rooted; no branch lengths.
+i
+# Rooted; no branch lengths.
 
 t <- root(phy=t, outgroup="AcAu", resolve.root=T)
 plot(t, cex = 0.8)
 
 t$tip.label <- as.character(cnames$str_sp)
 
-################################################################
-# plot with geography
-
-plot(c, direction = "up", show.tip.label = FALSE)
-
-# Australia
-willeerd.tiplabels(tip = c(15, 33, 39, 40:52), pch = 21,  col = '#000000', bg ='#000000', cex = 1.2)
-# #FFFF00
-
-# Central America
-willeerd.tiplabels(tip = c(2,5,20,21,56:58), pch = 21, col = '#000000', bg ='#4363D8', cex = 1.2)
-
-# North America
-willeerd.tiplabels(tip = c(4,6:8, 10:12, 17, 25:28, 35), pch = 21, col = '#000000', bg ='#911EB4', cex = 1.2)
-
-# South America
-willeerd.tiplabels(tip = c(9, 22, 24, 34, 36:38), pch = 21, col = '#000000', bg ='#F032E6', cex = 1.2)
-
-# Asia
-willeerd.tiplabels(tip = c(1,3,11,13,14,16,18,19,23,53:55,59,60,61), pch = 21, col = '#000000', bg ='#A9A9A9', cex = 1.2)
-
-# Africa
-willeerd.tiplabels(tip = c(29:32), pch = 21, col = '#000000', bg = '#42D4F4', cex = 1.2)
-
-legend(1.5, 250, legend = c("Australia", "Central America", "North America", "South America", "Asia", "Africa"), pch = 19, cex = 1.5, col = c("#000000", "#4363D8", "#911EB4", "#F032E6", "#A9A9A9", "#42D4F4"))
 
 #####################################################################
 # plot with new names, derived from structure
