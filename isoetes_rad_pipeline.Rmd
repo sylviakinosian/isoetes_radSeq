@@ -1,6 +1,6 @@
 ---
 title: "*Isoetes* RADSeq data analysis"
-author: "Sylvia Kinosian"
+author: Sylvia Kinosian
 output: html_document
 ---
 
@@ -114,21 +114,21 @@ k5 <- k5[,-(1:5)]
 # names file includes individual ids, species names, and geographic locations
 names <- read.csv("names.csv", sep = ',', header = T)
 
-x <- as.data.frame(matrix(ncol = 25, nrow = 49))
+x <- as.data.frame(matrix(ncol = 18, nrow = 50))
 x[,1:2] <- k2
 x[,3:5] <- k3
 x[,6:9] <- k4
 x[,10:14] <- k5
-x[,15:20] <- k5
-x[,21:25] <- n
+#x[,15:20] <- k5
+x[,15:18] <- names
 
 # order by species, then geography
-x <- x[order(x[,24]),]
+x <- x[order(x[,17]),]
 
 # list for plotting
 klist <- list(x[,1:2], x[,3:5], x[,6:9], x[,10:14])
 
-structure_plot(x[,25], ninds=49, klist)
+structure_plot(x[,18], ninds=50, klist)
 
 #######################################################
 # functions needed
@@ -152,12 +152,12 @@ structure_plot <- function(labels, ninds = 47, klist){
     # data frame for plotting
     d <- sp_labels(names = sp.names, min = my.min, mean = my.mean, max = my.max)
     # plot
-    plot_q_per_chain(klist)
-    text(cex = 1.3, x = (d[,2]-0.3), y = -0.7, labels = d[,1], xpd=NA, srt=50, font=3)
+    plot_q_per_chain(klist, labels)
+    #text(cex = 1.3, x = (d[,2]-0.3), y = -0.7, labels = d[,1], xpd=NA, srt=50, font=3)
     # lines
-    for (i in 1:length(d[,1])){
-        lines(x = d[i,3:4] , y = rep(-0.1, 2), lwd = 2.5, col = "black", xpd = NA)
-    }
+    #for (i in 1:length(d[,1])){
+    #    lines(x = d[i,3:4] , y = rep(-0.1, 2), lwd = 2.5, col = "black", xpd = NA)
+    #}
 
 }
 
@@ -174,18 +174,18 @@ sp_labels <- function(names, min, mean, max, ...){
 }
 
 # plot chains with species and geography labels 
-plot_q_per_chain <- function(kqlist, ...){
-    # thalictroides 2, gaudichaudii, thalictroides 1, pteridoides, cornuta, misc, 
-    cols <- c('#A8FFFD','#B862D3', '#A39D9D','#FFFF00', '#69C261', '#FF59AC', '#26CDCD',  '#C1C6FF') 
-    #cols <- c('#000075', '#E6194B', '#AAFFC3', '#FFE119', '#F58231', '#3CB44B')
-    par(mfrow = c(length(kqlist),1), mar = c(1,3,3,1) + 0.1, oma = c(15,0,0,0), mgp = c(1,1,0))
-    chain <- seq(1, length(kqlist), 1) 
-    for(i in 1:length(kqlist)){
-        barplot(t(kqlist[[i]]), beside= F, col= cols, border = 1, space = 0.05, xaxt = 'n', yaxt = 'n', main = paste("k =", chain[i]+1, sep = ' '), cex.lab = 1.2, cex.main = 1.6)
-        # y axis
-        axis(2, at = c(0, 0.25, 0.5, 0.75, 1), cex.axis = 1, las = 2, pos = -0.2)
-    }
-}
+#plot_q_per_chain <- function(kqlist, ...){
+#    # thalictroides 2, gaudichaudii, thalictroides 1, pteridoides, cornuta, misc, 
+#    cols <- c('#A8FFFD','#B862D3', '#A39D9D','#FFFF00', '#69C261', '#FF59AC', '#26CDCD',  '#C1C6FF') 
+#    #cols <- c('#000075', '#E6194B', '#AAFFC3', '#FFE119', '#F58231', '#3CB44B')
+#    par(mfrow = c(length(kqlist),1), mar = c(1,3,3,1) + 0.1, oma = c(15,0,0,0), mgp = c(1,1,0))
+#    chain <- seq(1, length(kqlist), 1) 
+#    for(i in 1:length(kqlist)){
+#        barplot(t(kqlist[[i]]), beside= F, col= cols, border = 1, space = 0.05, xaxt = 'n', yaxt = 'n', main = paste("k =", chain[i]+1, sep = ' '), cex.lab = 1.2, cex.main = 1.6)
+#        # y axis
+#        axis(2, at = c(0, 0.25, 0.5, 0.75, 1), cex.axis = 1, las = 2, pos = -0.2)
+#    }
+#}
 
 ##################################################
 # different colors
@@ -195,219 +195,23 @@ plot_q_per_chain <- function(kqlist, xlabel){
 	cols <- c('#A8886C', '#95CD85', '#4EC5FF', '#DBF3FF', '#A39D9D') 
 	par(mfrow = c(length(kqlist), 1), mar = c(1, 3, 3, 1) + 0.1, oma = c(15, 0, 0, 0), mgp = c(1, 1, 0))
 	chain <- seq(1, length(kqlist), 1) 
-	for(i in 1:(length(kqlist)-1)){
+	for(i in 1){
         	barplot(t(kqlist[[i]]), beside = F, col = cols, border = 1, space = 0.05, xaxt = 'n', yaxt = 'n', main = paste("k =", chain[i]+1, sep = ' '), cex.lab = 1.2, cex.main = 1.6)
 		#barplot(t(kqlist[[i]]), beside= F, col= cols, las= 2, axisnames= T, cex.name= 1, cex.axis= 1.2, border= 1.5, space= c(0.05,0.05), yaxt= 'n', ylab= paste("k =", chain[i]+1, sep= ' '), cex.lab= 2, names.arg= xlabel)
 
         	# y axis
-        	axis(2, at = c(0, 0.25, 0.5, 0.75, 1), cex.axis = 1, las = 2, pos = -0.2)
+        	axis(2, at = c(0, 0.5, 1), cex.axis = 1, las = 2, pos = -0.2)
     }
-	barplot(t(kqlist[[length(kqlist)]]), beside = F, col = cols, border = 1, space = 0.05, yaxt = 'n', main = paste("k =", length(kqlist)+1, sep= ' '), cex.lab= 1.2, cex.main = 1.6, names.arg = xlabel, las = 2)
-	axis(2, at = c(0, 0.25, 0.5, 0.75, 1), cex.axis = 1, las = 2, pos = -0.2)
+	barplot(t(kqlist[[length(kqlist)]]), beside = F, col = cols, border = 1, space = 0.05, yaxt = 'n', main = paste("k =", length(kqlist)+1, sep= ' '), cex.lab= 0.2, cex.main = 1, cex.names = 0.5, names.arg = xlabel, las = 2)
+	axis(2, at = c(0, 0.5, 1), cex.axis = 1, las = 2, pos = -0.2)
 
 }
 
-plot_q_per_chain(klist, x[,25])
+plot_q_per_chain(k4list, ck4[,5])
 
 
 ```
 
-### Phylogeny estimation
-
-#### Tetrad
-
-ipyrad inferring quartet trees with [tetrad](https://nbviewer.jupyter.org/github/dereneaton/ipyrad/blob/master/tests/cookbook-quartet-species-tree.ipynb)
-
-Command line, on a server
-```{bash eval=FALSE}
-# start an interactive job
-srun -t 24:00:00 -n 24 -N 1 -A wolf-kp -p wolf-kp --pty /bin/bash -l
-
-# start ipcluster
-ipcluster start --n=24 --daemonize
-```
-
-Python
-```{perl eval=FALSE}
-import ipyrad.analysis as ipa
-import ipyparallel as ipp
-import toytree
-
-ipyclient = ipp.Client()
-print("connected to {} cores".format(len(ipyclient)))
-# connected to 24 cores
-
-tet = ipa.tetrad(
-	name="iso",
-	seqfile="./iso.snps.phy",
-	mapfile="./iso.snps.map",
-	nboots=100,
-	)
-
-# loading seq array [49 taxa x 21616 bp]
-# max unlinked SNPs per quartet (nloci): 3343
-
-tet.run(ipyclient=ipyclient)
-# host comput node: [24 cores] on kp382
-# inferring 395010 induced quartet trees
-# [####################] 100%  initial tree | 0:00:40 |
-# [####################] 100%  boot 100     | 0:52:57 |
-```
-
-Plotting
-```{r eval=FALSE}
-library(ape)
-library(phytools)
-# https://github.com/willpearse/willeerd
-library(willeerd)
-
-t <- read.tree("cer.tree")
-# Enter file name: cer.tree
-
-t
-# Phylogenetic tree with 48 tips and 47 internal nodes.
-
-i
-# Rooted; no branch lengths.
-
-t <- root(phy=t, outgroup="AcAu", resolve.root=T)
-plot(t, cex = 0.8)
-
-t$tip.label <- as.character(cnames$str_sp)
-
-
-#####################################################################
-# plot with new names, derived from structure
-
-pdf("phy.pdf", width = 15, height = 10)
-plot(t, direction = 'up', show.tip.label = FALSE)
-
-# thalictroides 1
-willeerd.tiplabels(tip = c(1:14, 15, 16, 18, 20, 49:57), pch = 21, col = "#000000", bg = "#AAFFC3", cex = 2)
-
-# thalictroides 2
-willeerd.tiplabels(tip = c(41:47), pch = 21, col = "#000000", bg = "#000075", cex = 2)
-
-# cornuta
-willeerd.tiplabels(tip = c(19, 21, 22, 31, 32), pch = 21, col = '#000000', bg = "#F58231", cex = 2)
-
-# pteridoides
-willeerd.tiplabels(tip = c(24:28), pch = 21, col = '#000000', bg = "#FFE119", cex = 2)
-
-# gaudichaudii
-willeerd.tiplabels(tip = c(33:40, 48), pch = 21, col = '#000000', bg = "#E6194B", cex = 2)
-
-# richardii
-willeerd.tiplabels(tip = c(17, 23, 29), pch = 21, col = '#000000', bg = "#3CB44B", cex = 2)
-
-# Acrostichum
-willeerd.tiplabels(tip = 30, pch = 21, col = '#000000', bg = "#800000", cex = 2)
-
-legend(1.5, 400, legend = c("C. gaudichaudii", "C. cornuta", "C. pteridoides", "C. richardii", "C. thalictroides 1", "C. thalictroides 2", "A. aureum"), pch = 19, cex = 2, col = c("#E6194B", "#F58231", "#FFE119", "#3CB44B", "#AAFFC3", "#000075", "#800000"), bty= "n", text.font = 3)
-
-dev.off()
-
-#######################
-plot(t, direction = 'up', show.tip.label = FALSE)
-
-# thalictroides 2, gaudichaudii, thalictroides 1, pteridoides, cornuta, misc, 
-	#cols <- c('#A8FFFD','#B862D3', '#A39D9D','#FFFF00', '#69C261', '#FF59AC', '#26CDCD',  '#C1C6FF')
-
-# thalictroides 1
-willeerd.tiplabels(tip = c(1:14, 15, 16, 18, 20, 49:57), pch = 21, col = '#000000', bg = "#FFFF00", cex = 2.5)
-
-# thalictroides 2
-willeerd.tiplabels(tip = c(41:47), pch = 21, col = "#000000", bg = "#A8FFFD", cex = 2.5)
-
-# cornuta
-willeerd.tiplabels(tip = c(19, 21, 22, 31, 32), pch = 21, col = '#000000', bg = "#A39D9D", cex = 2.5)
-
-# pteridoides
-willeerd.tiplabels(tip = c(24:28), pch = 21, col = '#000000', bg = "#B862D3", cex = 2.5)
-
-# gaudichaudii
-willeerd.tiplabels(tip = c(33:40, 48), pch = 21, col = '#000000', bg = "#69C261", cex = 2.5)
-
-# richardii
-willeerd.tiplabels(tip = c(17, 23, 29), pch = 21, col = '#000000', bg = "#FF59AC", cex = 2.5)
-
-# Acrostichum
-willeerd.tiplabels(tip = 30, pch = 21, col = '#000000', bg = "#800000", cex = 2.5)
-
-legend(1.5, 400, legend = c("C. thalictroides 1", "C. thalictroides 2", "C. cornuta", "C. gaudichaudii", "C. pteridoides", "C. richardii", "A. aureum"), pch = 19, cex = 2, col = c("#FFFF00", "#A8FFFD", "#A39D9D",  "#69C261", "#B862D3", "#FF59AC", "#800000"), bty= "n", text.font = 3)
-
-
-#############################################################
-# trying to sort one column by another with the same names in a different order
-# m <- match(names[,1], c_names[,1])
-# match_names <- match_names[order(m),]
-```
-
-### Ploidy analysis
-
-#### gbs2ploidy
-
-I converted the VCF file output by ipyrad to the gbs2ploidy format with this [Python script](https://github.com/carol-rowe666/vcf2hetAlleleDepth) written by Carol Rowe.
-
-```{r eval=FALSE}
-library(gbs2ploidy)
-
-# load sample names
-ids <- read.csv("./HAD_ID.csv")
-
-# load hetAlleleDepth table
-# 56 samples with 2 alleles per samples = 112 columns
-# 29625 SNPs / rows
-het <- as.matrix(read.table("./hetAlleleDepth.txt", header = F))
-
-# allele a for each ind
-a <- seq(1, 98, 2)
-# allele b for each ind
-b <- seq(2, 98, 2)
-
-# retrieve entire column (ind) for each allele (row)
-cov1 <- het[,a]
-cov2 <- het[,b]
-
-# props = c(0.5, 0.66, 0.75) for last three proportions (our model)
-# estprops: this functions uses Markov chain Monte Carlo to obtain Bayesian estimates of allelic proportions, which denote that proportion of heterozygous GBS SNPs with different allelic ratios.
-propOut <- estprops(cov1 = cov1, cov2 = cov2, props = c(0.25, 0.33, 0.5, 0.66, 0.75), mcmc.nchain = 3, mcmc.steps = 10000, mcmc.burnin = 1000, mcmc.thin = 5)
-
-# estprops returns a list with one component per individual. Components summarize the posterior distributions for allelic proportions. 
-# Rows correspond to different allelic proportions (as defined by ‘props’)
-# Columns give the 2.5th, 25th, 50th, 75th, and 97.5th quantiles of the posterior distribution for each parameter
-propOut[1:2]
-# [[1]]
-#            2.5%        25%        50%        75%     97.5%
-# 0.25 0.02615469 0.04860941 0.06164483 0.07515569 0.1032398
-# 0.33 0.02585112 0.05159050 0.06680296 0.08333787 0.1192802
-# 0.5  0.13956566 0.18396947 0.20859096 0.23692481 0.2916249
-# 0.66 0.14647331 0.21795926 0.25814796 0.29713085 0.3730970
-# 0.75 0.31290242 0.36928452 0.39924378 0.43130653 0.4903253
-# 
-# [[2]]
-#              2.5%         25%        50%        75%      97.5%
-# 0.25 0.1109331672 0.133872341 0.14586992 0.15856786 0.18260319
-# 0.33 0.0005099962 0.005954433 0.01351898 0.02430852 0.05098758
-# 0.5  0.1668016464 0.208449542 0.23031057 0.25328263 0.29781157
-# 0.66 0.0894613061 0.153616076 0.19248894 0.23176188 0.30600852
-# 0.75 0.3248250138 0.382064623 0.41320705 0.44262781 0.49606739
-
-####################################
-# plotting
-
-pdf("g2p.pdf")
-par(mfrow = c(3, 3))
-for(i in c(1:49)){
-  barplot(propOut[[i]][3:5,3], ylim = c(0,1), axes = FALSE, xlab = "Allelic ratios", ylab = "Posterior proportions", xaxt = 'n')
-  axis(1, at = c(0.7, 1.9, 3.1), labels = c("1:1", "2:1", "3:1"))
-  axis(2)
-  box()
-  segments(c(0.7, 1.9, 3.1), propOut[[i]][3:5,1], c(0.7, 1.9, 3.1), propOut[[i]][3:5,5])
-  title(main = paste(ids[[2]][i], "\n", ids[[3]][i]))
-}
-dev.off()
-```
 
 ## Program Versions
 

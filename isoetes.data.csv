@@ -1,0 +1,51 @@
+*sample_name	*organism	name	*geo_loc_name	*tissue	lat_lon	cultivar	ecotype	isolate	age	developmental stage
+T-B-1	I. bolanderi	Iso-1	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+S-Eag-3	I. bolanderi	Iso-16	not applicable	leaf	38.941903, -120.120617	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-S-1	I. bolanderi	Iso-17	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-S-3	I. bolanderi	Iso-18	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+T-B-3	I. bolanderi	Iso-2	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-306-11G	I. bolanderi	Iso-32	not applicable	leaf	45.409232, -113.68926	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-306-12G	I. bolanderi	Iso-33	not applicable	leaf	45.409232, -113.68926	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-306-13G	I. bolanderi	Iso-34	not applicable	leaf	45.409232, -113.68926	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-304-12E	I. bolanderi	Iso-35	not applicable	leaf	45.41046, -113.689614	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-304-13E	I. bolanderi	Iso-36	not applicable	leaf	45.41046, -113.689614	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-305-11F	I. bolanderi	Iso-37	not applicable	leaf	45.40939, -113.690193	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-305-12F	I. bolanderi	Iso-38	not applicable	leaf	45.40939, -113.690193	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-300-11A	I. bolanderi	Iso-40	not applicable	leaf	45.412825, -113.700031	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-300-12A	I. bolanderi	Iso-41	not applicable	leaf	45.412825, -113.700031	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-302-11C	I. bolanderi	Iso-42	not applicable	leaf	45.410384, -113.691105	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-302-13C	I. bolanderi	Iso-43	not applicable	leaf	45.410384, -113.691105	not applicable	not applicable	not applicable	not applicable	not applicable
+Taylor-6754	I. bolanderi	Iso-46	not applicable	leaf	38.8481, -120.0996	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-C-3	I. echinospora	Iso-31	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Schafran-32	I. echinospora	Iso-45	not applicable	leaf	43.79837, -75.27938	not applicable	not applicable	not applicable	not applicable	not applicable
+E-A-2	I. sp. nov. A	Iso-12	not applicable	leaf	38.845615, -120.076766	not applicable	not applicable	not applicable	not applicable	not applicable
+S-Eag-2	I. sp. nov. A	Iso-15	not applicable	leaf	38.941903, -120.120617	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-T-1	I. sp. nov. A	Iso-19	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-T-2	I. sp. nov. A	Iso-20	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-C-1	I. sp. nov. A	Iso-21	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-C-3	I. sp. nov. A	Iso-23	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+JSS-305-30F	I. sp. nov. A	Iso-39	not applicable	leaf	45.40939, -113.690193	not applicable	not applicable	not applicable	not applicable	not applicable
+Taylor-6759	I. sp. nov. A	Iso-47	not applicable	leaf	38.9431, -120.1225	not applicable	not applicable	not applicable	not applicable	not applicable
+T-K-1	I. sp. nov. A	Iso-6	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+T-K-3	I. sp. nov. A	Iso-8	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+E-A-3	I. sp. nov. B	Iso-13	not applicable	leaf	38.845615, -120.076766	not applicable	not applicable	not applicable	not applicable	not applicable
+E-C-A-1	I. sp. nov. B	Iso-9	not applicable	leaf	38.845615, -120.076766	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-D-1	I. maritima	Iso-24	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-D-3	I. maritima	Iso-25	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-A-1	I. maritima	Iso-26	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-A-3	I. maritima	Iso-27	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-B-1	I. maritima	Iso-28	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-B-2	I. maritima	Iso-29	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+Co-C-2	I. maritima	Iso-30	not applicable	leaf	49.574457, -125.185413	not applicable	not applicable	not applicable	not applicable	not applicable
+E-O-2	I. occidentalis	Iso-10	not applicable	leaf	38.845615, -120.076766	not applicable	not applicable	not applicable	not applicable	not applicable
+E-O-3	I. occidentalis	Iso-11	not applicable	leaf	38.845615, -120.076766	not applicable	not applicable	not applicable	not applicable	not applicable
+S-Eag-1	I. occidentalis	Iso-14	not applicable	leaf	38.941903, -120.120617	not applicable	not applicable	not applicable	not applicable	not applicable
+N-Eag-C-2	I. occidentalis	Iso-22	not applicable	leaf	38.943154, -120.122551	not applicable	not applicable	not applicable	not applicable	not applicable
+T-O-1	I. occidentalis	Iso-3	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+T-O-2	I. occidentalis	Iso-4	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+Grinter-A	I. occidentalis	Iso-49	not applicable	leaf	55.97305556, -132.7620167	not applicable	not applicable	not applicable	not applicable	not applicable
+T-O-3	I. occidentalis	Iso-5	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+Taylor-6758	I. occidentalis	Iso-50	not applicable	leaf	38.9431, -120.1225	not applicable	not applicable	not applicable	not applicable	not applicable
+T-K-2	I. occidentalis	Iso-7	not applicable	leaf	38.845166, -120.097423	not applicable	not applicable	not applicable	not applicable	not applicable
+Schafran-90	I. prototypus	Iso-44	not applicable	leaf	44.34913, -68.24021	not applicable	not applicable	not applicable	not applicable	not applicable
+Taylor-7156	I. x herbwagneri	Iso-48	not applicable	leaf	47.9793, -113.9246	not applicable	not applicable	not applicable	not applicable	not applicable
